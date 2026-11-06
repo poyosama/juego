@@ -6,6 +6,7 @@ signal stamina_changed(percent)
 signal flashlight_toggled(is_on)
 
 const Stamina = preload("res://scripts/core/stamina.gd")
+const Inventory = preload("res://scripts/core/inventory.gd")
 
 @export var walk_speed: float = 3.2
 @export var sprint_speed: float = 5.8
@@ -26,6 +27,7 @@ const Stamina = preload("res://scripts/core/stamina.gd")
 @onready var sfx_player: AudioStreamPlayer = $SFXPlayer
 
 var stamina: Stamina
+var inventory: Inventory = Inventory.new()
 var is_crouching: bool = false
 var is_sprinting: bool = false
 var is_hidden: bool = false

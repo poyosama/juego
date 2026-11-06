@@ -20,10 +20,10 @@
 
 ## 4. Casa e interacción (house-interaction)
 
-- [ ] 4.1 `HouseLayout` (datos de dos pisos, puertas, llaves, fusibles, escondites, contestadores, sustos, patrulla) con tests de consistencia (ids únicos, cada puerta bloqueada tiene su llave alcanzable, 5 fusibles)
-- [ ] 4.2 `HouseBuilder` que genera paredes, pisos, techos, escalera, muebles simples y navmesh; verificar cargando el nivel headless
-- [ ] 4.3 `Inventory` (agregar, tener y listar llaves, serializar); verificar con tests unitarios
-- [ ] 4.4 Raycast de interacción, texto de acción y nodos `Door` (bisagra animada, bloqueada con llave), `Pickup` (llave/fusible) y `HidingSpot`; verificar con tests de la lógica de bloqueo y jugando
+- [x] 4.1 `HouseLayout` (datos de dos pisos, puertas, llaves, fusibles, escondites, contestadores, sustos, patrulla) con tests de consistencia (ids únicos, cada puerta bloqueada tiene su llave alcanzable, 5 fusibles)
+- [x] 4.2 `HouseBuilder` que genera paredes, pisos, techos, escalera, muebles simples y navmesh; verificar cargando el nivel headless
+- [x] 4.3 `Inventory` (agregar, tener y listar llaves, serializar); verificar con tests unitarios
+- [x] 4.4 Raycast de interacción, texto de acción y nodos `Door` (bisagra animada, bloqueada con llave), `Pickup` (llave/fusible) y `HidingSpot`; verificar con tests de la lógica de bloqueo y jugando
 
 ## 5. Atmósfera y audio (horror-atmosphere)
 
