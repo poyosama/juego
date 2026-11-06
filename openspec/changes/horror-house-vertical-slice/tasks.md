@@ -40,12 +40,12 @@
 
 ## 7. Flujo de juego (game-flow)
 
-- [ ] 7.1 `Objective` (fusibles 0..5, energía restaurada, salida habilitada); verificar con tests unitarios
-- [ ] 7.2 `SaveData` (serializar y deserializar posición, inventario, fusibles, puertas, recogidos, sustos) y `Game` (autoguardado, cargar, borrar); verificar con test de ida y vuelta
-- [ ] 7.3 `Settings` (volúmenes, brillo, sensibilidad, pantalla completa; persistencia en ConfigFile); verificar con test de ida y vuelta
-- [ ] 7.4 Menú principal (Continuar deshabilitado sin guardado), pausa y opciones; verificar jugando
-- [ ] 7.5 Caja de fusibles, puerta principal, zona de escape, pantalla de final y créditos que vuelven al menú y borran el guardado; verificar jugando
-- [ ] 7.6 HUD (texto de acción, barra de resistencia, fusibles, llaves, aviso de guardado, subtítulos); verificar jugando
+- [x] 7.1 `Objective` (fusibles 0..5, energía restaurada, salida habilitada); verificar con tests unitarios
+- [x] 7.2 `SaveData` (serializar y deserializar posición, inventario, fusibles, puertas, recogidos, sustos) y `Game` (autoguardado, cargar, borrar); verificar con test de ida y vuelta
+- [x] 7.3 `Settings` (volúmenes, brillo, sensibilidad, pantalla completa; persistencia en ConfigFile); verificar con test de ida y vuelta
+- [x] 7.4 Menú principal (Continuar deshabilitado sin guardado), pausa y opciones; verificar jugando
+- [x] 7.5 Caja de fusibles, puerta principal, zona de escape, pantalla de final y créditos que vuelven al menú y borran el guardado; verificar jugando
+- [x] 7.6 HUD (texto de acción, barra de resistencia, fusibles, llaves, aviso de guardado, subtítulos); verificar jugando
 
 ## 8. Integración
 

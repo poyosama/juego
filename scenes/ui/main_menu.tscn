@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c7k0m4y2qmenu"]
+[gd_scene load_steps=3 format=3 uid="uid://c7k0m4y2qmenu"]
 
 [ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_menu"]
+[ext_resource type="PackedScene" path="res://scenes/ui/options_menu.tscn" id="2_opt"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -64,3 +65,7 @@ text = "Opciones"
 [node name="BtnQuit" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Salir"
+
+[node name="OptionsMenu" parent="." instance=ExtResource("2_opt")]
+visible = false
+layout_mode = 1
