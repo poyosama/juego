@@ -2,9 +2,9 @@
 
 ## 1. Base del proyecto y tests
 
-- [ ] 1.1 Crear el runner `tests/run_tests.gd` y un test de ejemplo; verificar que `godot --headless --path . -s res://tests/run_tests.gd` sale con código 0, y con código 1 cuando un test falla
-- [ ] 1.2 Configurar `project.godot` (escena principal = menú, autoloads `Settings`/`SoundBank`/`Game`, acciones de input WASD/Shift/Ctrl/F/E/Esc, capas de física) y verificar que el proyecto carga headless sin errores
-- [ ] 1.3 Documentar en el README cómo correr los tests y la estructura nueva
+- [x] 1.1 Crear el runner `tests/run_tests.gd` y un test de ejemplo; verificar que `godot --headless --path . -s res://tests/run_tests.gd` sale con código 0, y con código 1 cuando un test falla
+- [x] 1.2 Configurar `project.godot` (escena principal = menú, autoloads `Settings`/`SoundBank`/`Game`, acciones de input WASD/Shift/Ctrl/F/E/Esc, capas de física) y verificar que el proyecto carga headless sin errores
+- [x] 1.3 Documentar en el README cómo correr los tests y la estructura nueva
 
 ## 2. Jugador (player-controller)
 
