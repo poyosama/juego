@@ -27,10 +27,10 @@
 
 ## 5. Atmósfera y audio (horror-atmosphere)
 
-- [ ] 5.1 `ToneSynth` (genera WAV: pasos, click, puerta, traba, bip, golpe, latido, gruñido, ambiente en loop, siseo); verificar con tests de longitud, formato y loop
-- [ ] 5.2 `SoundBank` y buses Master/Music/SFX; ambiente en loop y pasos según la velocidad; verificar jugando
-- [ ] 5.3 `ScareTrigger` de un solo uso (ruido, luz que titila, objeto que cae) con estado guardable; verificar con test de "una sola vez" y jugando
-- [ ] 5.4 `AnswerMachine` con subtítulos por tiempo y audio opcional, más 3 mensajes de historia; verificar con test del avance de subtítulos
+- [x] 5.1 `ToneSynth` (genera WAV: pasos, click, puerta, traba, bip, golpe, latido, gruñido, ambiente en loop, siseo); verificar con tests de longitud, formato y loop
+- [x] 5.2 `SoundBank` y buses Master/Music/SFX; ambiente en loop y pasos según la velocidad; verificar jugando
+- [x] 5.3 `ScareTrigger` de un solo uso (ruido, luz que titila, objeto que cae) con estado guardable; verificar con test de "una sola vez" y jugando
+- [x] 5.4 `AnswerMachine` con subtítulos por tiempo y audio opcional, más 3 mensajes de historia; verificar con test del avance de subtítulos
 
 ## 6. Enemigo (stalker-enemy)
 

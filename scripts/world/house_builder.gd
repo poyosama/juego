@@ -6,6 +6,8 @@ const PickupScript = preload("res://scripts/world/pickup.gd")
 const HidingSpotScript = preload("res://scripts/world/hiding_spot.gd")
 const FuseBoxScript = preload("res://scripts/world/fuse_box.gd")
 const MainExitScript = preload("res://scripts/world/main_exit.gd")
+const AnswerMachineScript = preload("res://scripts/world/answer_machine.gd")
+const ScareTriggerScript = preload("res://scripts/world/scare_trigger.gd")
 
 var wall_material: StandardMaterial3D
 var floor_material: StandardMaterial3D
@@ -78,7 +80,15 @@ func build_house(layout: Dictionary) -> void:
 	for h_data in layout.get("hiding_spots", []):
 		_spawn_hiding_spot(h_data)
 
-	# 8. Caja de fusibles y salida principal
+	# 8. Instanciar contestadores con subtítulos
+	for am_data in layout.get("answering_machines", []):
+		_spawn_answer_machine(am_data)
+
+	# 9. Instanciar zonas de sustos
+	for st_data in layout.get("scare_triggers", []):
+		_spawn_scare_trigger(st_data)
+
+	# 10. Caja de fusibles y salida principal
 	if layout.has("fuse_box"):
 		_spawn_fuse_box(layout["fuse_box"])
 	if layout.has("main_exit"):
@@ -240,6 +250,44 @@ func _spawn_hiding_spot(data: Dictionary) -> void:
 	spot.add_child(mesh_inst)
 
 	add_child(spot)
+
+
+func _spawn_answer_machine(data: Dictionary) -> void:
+	var am := AnswerMachineScript.new()
+	am.machine_id = data.get("id", "")
+	am.machine_name = data.get("name", "Contestador")
+	am.subtitles = data.get("subtitles", [])
+	am.position = data.get("position", Vector3.ZERO)
+
+	var col := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = Vector3(0.5, 0.4, 0.5)
+	col.shape = box
+	am.add_child(col)
+
+	var mesh_inst := MeshInstance3D.new()
+	var m := BoxMesh.new()
+	m.size = Vector3(0.4, 0.3, 0.4)
+	m.material = metal_material
+	mesh_inst.mesh = m
+	am.add_child(mesh_inst)
+
+	add_child(am)
+
+
+func _spawn_scare_trigger(data: Dictionary) -> void:
+	var st := ScareTriggerScript.new()
+	st.trigger_id = data.get("id", "")
+	st.scare_type = data.get("type", "flicker_and_noise")
+	st.position = data.get("position", Vector3.ZERO)
+
+	var col := CollisionShape3D.new()
+	var box := BoxShape3D.new()
+	box.size = data.get("size", Vector3(2.0, 2.0, 2.0))
+	col.shape = box
+	st.add_child(col)
+
+	add_child(st)
 
 
 func _spawn_fuse_box(data: Dictionary) -> void:
