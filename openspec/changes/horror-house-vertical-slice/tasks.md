@@ -34,9 +34,9 @@
 
 ## 6. Enemigo (stalker-enemy)
 
-- [ ] 6.1 `EnemyBrain` (máquina de estados patrullar/investigar/perseguir/buscar/matar, radios de oído por ruido, escondite); verificar con tests de cada transición de la spec
-- [ ] 6.2 Nodo `Enemy` (cuerpo low-poly con ojos, `NavigationAgent3D`, cono de visión con raycast, velocidades, sonidos); verificar jugando
-- [ ] 6.3 Feedback de cercanía (latidos y distorsión VHS) y muerte con susto en pantalla y recarga; verificar jugando
+- [x] 6.1 `EnemyBrain` (máquina de estados patrullar/investigar/perseguir/buscar/matar, radios de oído por ruido, escondite); verificar con tests de cada transición de la spec
+- [x] 6.2 Nodo `Enemy` (cuerpo low-poly con ojos, `NavigationAgent3D`, cono de visión con raycast, velocidades, sonidos); verificar jugando
+- [x] 6.3 Feedback de cercanía (latidos y distorsión VHS) y muerte con susto en pantalla y recarga; verificar jugando
 
 ## 7. Flujo de juego (game-flow)
 
