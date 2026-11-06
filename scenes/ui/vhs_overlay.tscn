@@ -1,0 +1,69 @@
+[gd_scene load_steps=4 format=3 uid="uid://dmvhsoverlay01"]
+
+[ext_resource type="Shader" path="res://shaders/vhs.gdshader" id="1_vhs"]
+[ext_resource type="Script" path="res://scripts/ui/vhs_overlay.gd" id="2_overlay"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vhs"]
+shader = ExtResource("1_vhs")
+shader_parameter/aberration_amount = 0.003
+shader_parameter/noise_amount = 0.06
+shader_parameter/scanline_strength = 0.18
+shader_parameter/tracking_distortion = 0.008
+shader_parameter/tracking_speed = 0.6
+shader_parameter/vignette_intensity = 0.8
+shader_parameter/brightness_mult = 1.0
+shader_parameter/glitch_intensity = 0.0
+
+[node name="VHSOverlay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_overlay")
+
+[node name="VHSRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_vhs")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LblPlay" type="Label" parent="HUD"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 24.0
+offset_right = 140.0
+offset_bottom = 56.0
+theme_override_colors/font_color = Color(0.15, 0.95, 0.25, 0.85)
+theme_override_font_sizes/font_size = 22
+text = "PLAY ▶"
+
+[node name="LblTimer" type="Label" parent="HUD"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_top = 24.0
+offset_right = -32.0
+offset_bottom = 56.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0.9, 0.9, 0.95, 0.85)
+theme_override_font_sizes/font_size = 20
+text = "SP 00:00:00"
+horizontal_alignment = 2

@@ -14,9 +14,9 @@
 
 ## 3. Presentación retro (retro-presentation)
 
-- [ ] 3.1 Shader `vhs.gdshader` (scanlines, ruido, aberración, tracking, viñeta, distorsión, brillo); verificar que compila al cargar la escena headless
-- [ ] 3.2 Pipeline `SubViewport` de 480x270 con filtro nearest y overlay "PLAY ▶" con contador; verificar visualmente al correr el juego
-- [ ] 3.3 `Environment` con niebla, ambiente bajo y materiales retro (texturas de ruido nearest); verificar visualmente
+- [x] 3.1 Shader `vhs.gdshader` (scanlines, ruido, aberración, tracking, viñeta, distorsión, brillo); verificar que compila al cargar la escena headless
+- [x] 3.2 Pipeline `SubViewport` de 480x270 con filtro nearest y overlay "PLAY ▶" con contador; verificar visualmente al correr el juego
+- [x] 3.3 `Environment` con niebla, ambiente bajo y materiales retro (texturas de ruido nearest); verificar visualmente
 
 ## 4. Casa e interacción (house-interaction)
 
