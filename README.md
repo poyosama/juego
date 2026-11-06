@@ -1,6 +1,6 @@
 # Juego 🎮
 
-Un juego hecho en **Godot 4** por poyosama y Santiago, vibecodeado bien chill.
+Un juego hecho en **Godot 4** por poyosama y Santiago
 
 ## Cómo abrirlo
 
