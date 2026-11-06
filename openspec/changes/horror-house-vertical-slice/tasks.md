@@ -49,8 +49,8 @@
 
 ## 8. Integración
 
-- [ ] 8.1 Correr toda la suite de tests y una carga headless de cada escena sin errores ni warnings de script
-- [ ] 8.2 Commit y push a `origin/main` con la identidad Santiago-btto
+- [x] 8.1 Correr toda la suite de tests y una carga headless de cada escena sin errores ni warnings de script
+- [x] 8.2 Commit y push a `origin/main` con la identidad Santiago-btto
 
 ## Workflow follow-up
 
