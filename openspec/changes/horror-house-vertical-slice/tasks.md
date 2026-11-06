@@ -8,9 +8,9 @@
 
 ## 2. Jugador (player-controller)
 
-- [ ] 2.1 `Stamina` (gasto, agotamiento con umbral del 30%, demora y recuperación); verificar con tests unitarios
-- [ ] 2.2 Escena `Player` (`CharacterBody3D`, cámara, mouse look con límite de ±85°, caminar, correr, agacharse, bob de cámara) usando `Stamina`; verificar cargando la escena headless
-- [ ] 2.3 Linterna `SpotLight3D` con F y sonido de click, sin batería; verificar en la escena de juego
+- [x] 2.1 `Stamina` (gasto, agotamiento con umbral del 30%, demora y recuperación); verificar con tests unitarios
+- [x] 2.2 Escena `Player` (`CharacterBody3D`, cámara, mouse look con límite de ±85°, caminar, correr, agacharse, bob de cámara) usando `Stamina`; verificar cargando la escena headless
+- [x] 2.3 Linterna `SpotLight3D` con F y sonido de click, sin batería; verificar en la escena de juego
 
 ## 3. Presentación retro (retro-presentation)
 
