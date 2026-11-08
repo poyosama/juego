@@ -44,6 +44,9 @@ var _initial_head_y: float = 1.6
 func _ready() -> void:
 	stamina = Stamina.new(100.0, 25.0, 20.0, 1.2, 0.3)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	# Pendiente de la escalera (~35°) caminable y pegado al piso al bajar
+	floor_max_angle = deg_to_rad(46.0)
+	floor_snap_length = 0.5
 	if head:
 		_initial_head_y = head.position.y
 	if flashlight:
@@ -51,11 +54,7 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if is_hidden:
-		if event.is_action_pressed("interact"):
-			exit_hiding()
-		return
-
+	# Mirar con el mouse funciona también escondido (para espiar por las rendijas)
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		var sens: float = Settings.mouse_sensitivity if Settings else 0.002
 		rotate_y(-event.relative.x * sens)
@@ -63,10 +62,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			head.rotate_x(-event.relative.y * sens)
 			head.rotation.x = clampf(head.rotation.x, deg_to_rad(-85.0), deg_to_rad(85.0))
 
+	if is_hidden:
+		if event.is_action_pressed("interact"):
+			get_viewport().set_input_as_handled()
+			exit_hiding()
+		return
+
 	if event.is_action_pressed("toggle_flashlight"):
 		toggle_flashlight()
 
 	if event.is_action_pressed("interact"):
+		get_viewport().set_input_as_handled()
 		try_interact()
 
 
@@ -192,6 +198,8 @@ func try_interact() -> void:
 
 
 func get_interaction_target():
+	if is_hidden:
+		return hiding_spot
 	if interaction_ray and interaction_ray.is_colliding():
 		var collider = interaction_ray.get_collider()
 		if collider and collider.has_method("get_prompt"):
@@ -203,16 +211,50 @@ func enter_hiding(spot: Node) -> void:
 	is_hidden = true
 	hiding_spot = spot
 	velocity = Vector3.ZERO
+	noise_level = 0.0
+	is_sprinting = false
+	if not collision_shape:
+		collision_shape = get_node_or_null("CollisionShape3D")
+	if not head:
+		head = get_node_or_null("Head")
+	if not flashlight:
+		flashlight = get_node_or_null("Head/Camera3D/Flashlight")
 	if collision_shape:
 		collision_shape.disabled = true
 	if flashlight:
 		flashlight.visible = false
+	if spot:
+		if "occupant" in spot:
+			spot.occupant = self
+		# Mover al jugador para que la cámara quede dentro del mueble y mirando hacia la salida
+		if spot.has_method("get_camera_position") and head:
+			var target_pos: Vector3 = spot.get_camera_position() - Vector3(0, head.position.y, 0)
+			if is_inside_tree():
+				global_position = target_pos
+			else:
+				position = target_pos
+		if spot.has_method("get_exit_position"):
+			var exit_pos: Vector3 = spot.get_exit_position()
+			var spot_pos: Vector3 = spot.global_position if spot.is_inside_tree() else spot.position
+			var to_exit := Vector3(exit_pos.x - spot_pos.x, 0.0, exit_pos.z - spot_pos.z)
+			if to_exit.length_squared() > 0.001:
+				rotation.y = atan2(-to_exit.x, -to_exit.z)
 
 
 func exit_hiding() -> void:
 	is_hidden = false
-	if hiding_spot and hiding_spot.has_method("get_exit_position"):
-		global_position = hiding_spot.get_exit_position()
+	if hiding_spot:
+		if "occupant" in hiding_spot:
+			hiding_spot.occupant = null
+		if hiding_spot.has_method("get_exit_position"):
+			var exit_pos: Vector3 = hiding_spot.get_exit_position()
+			if is_inside_tree():
+				global_position = exit_pos
+			else:
+				position = exit_pos
 	hiding_spot = null
+	velocity = Vector3.ZERO
+	if not collision_shape:
+		collision_shape = get_node_or_null("CollisionShape3D")
 	if collision_shape:
 		collision_shape.disabled = false

@@ -7,6 +7,8 @@ signal game_loaded
 
 var current_save_data: Dictionary = {}
 var is_paused: bool = false
+## Objetivo de la partida en curso (lo asigna main_game.gd al iniciar).
+var objective = null
 
 
 func has_save() -> bool:

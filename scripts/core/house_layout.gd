@@ -60,7 +60,7 @@ static func get_default_layout() -> Dictionary:
 			{
 				"id": "door_kitchen",
 				"name": "Puerta Cocina",
-				"position": Vector3(2.5, 1.1, 1.0),
+				"position": Vector3(2.5, 0.1, 1.0),
 				"rotation_y": 0.0,
 				"is_locked": false,
 				"required_key": ""
@@ -68,7 +68,7 @@ static func get_default_layout() -> Dictionary:
 			{
 				"id": "door_basement",
 				"name": "Puerta Sótano",
-				"position": Vector3(-2.5, 1.1, -2.0),
+				"position": Vector3(-2.5, 0.1, -2.0),
 				"rotation_y": 0.0,
 				"is_locked": true,
 				"required_key": "llave_sotano"
@@ -76,7 +76,7 @@ static func get_default_layout() -> Dictionary:
 			{
 				"id": "door_guest_room",
 				"name": "Puerta Huéspedes",
-				"position": Vector3(2.5, 4.6, 0.0),
+				"position": Vector3(2.5, 3.6, 0.0),
 				"rotation_y": 0.0,
 				"is_locked": false,
 				"required_key": ""
@@ -84,7 +84,7 @@ static func get_default_layout() -> Dictionary:
 			{
 				"id": "door_master_room",
 				"name": "Puerta Principal",
-				"position": Vector3(-2.5, 4.6, 0.0),
+				"position": Vector3(-2.5, 3.6, 0.0),
 				"rotation_y": 0.0,
 				"is_locked": true,
 				"required_key": "llave_habitacion_principal"
@@ -95,20 +95,26 @@ static func get_default_layout() -> Dictionary:
 			{
 				"id": "closet_pb",
 				"name": "Armario del Comedor",
-				"position": Vector3(6.0, 1.0, -1.0),
-				"exit_position": Vector3(4.8, 0.5, -1.0)
+				"kind": "closet",
+				"size": Vector3(1.2, 2.0, 1.0),
+				"position": Vector3(6.0, 1.1, -1.0),
+				"exit_position": Vector3(4.8, 0.15, -1.0)
 			},
 			{
 				"id": "bed_guests",
 				"name": "Debajo de la Cama",
-				"position": Vector3(5.0, 3.8, 4.0),
-				"exit_position": Vector3(4.0, 3.8, 4.0)
+				"kind": "bed",
+				"size": Vector3(1.6, 0.8, 2.0),
+				"position": Vector3(5.0, 4.0, 4.0),
+				"exit_position": Vector3(3.8, 3.65, 4.0)
 			},
 			{
 				"id": "closet_master",
 				"name": "Armario Dormitorio",
-				"position": Vector3(-6.0, 4.5, 2.0),
-				"exit_position": Vector3(-4.8, 3.8, 2.0)
+				"kind": "closet",
+				"size": Vector3(1.2, 2.0, 1.0),
+				"position": Vector3(-6.0, 4.6, 2.0),
+				"exit_position": Vector3(-4.8, 3.65, 2.0)
 			}
 		],
 		# Contestadores con mensajes de voz

@@ -21,27 +21,29 @@ func interact(player: Node) -> void:
 	if item_type == "key":
 		if player and "inventory" in player and player.inventory:
 			player.inventory.add_key(item_id)
-		if SoundBank:
-			var snd := SoundBank.get_sound("click")
-			if snd:
-				var sfx := AudioStreamPlayer.new()
-				sfx.stream = snd
-				sfx.bus = &"SFX"
-				get_tree().root.add_child(sfx)
-				sfx.play()
-				sfx.finished.connect(sfx.queue_free)
+		_play_sfx("click")
 	elif item_type == "fuse":
-		if Game and "objective" in Game and Game.objective:
-			Game.objective.add_fuse(item_id)
-		if SoundBank:
-			var snd := SoundBank.get_sound("beep")
-			if snd:
-				var sfx := AudioStreamPlayer.new()
-				sfx.stream = snd
-				sfx.bus = &"SFX"
-				get_tree().root.add_child(sfx)
-				sfx.play()
-				sfx.finished.connect(sfx.queue_free)
+		register_with(Game)
+		_play_sfx("beep")
 
 	picked_up.emit({"id": item_id, "name": item_name, "type": item_type})
 	queue_free()
+
+
+## Suma este fusible al objetivo del juego indicado (autoload Game o un doble de test).
+func register_with(game: Object) -> void:
+	if game and "objective" in game and game.objective:
+		game.objective.add_fuse(item_id)
+
+
+func _play_sfx(sound_name: String) -> void:
+	if not is_inside_tree() or not SoundBank:
+		return
+	var snd := SoundBank.get_sound(sound_name)
+	if snd:
+		var sfx := AudioStreamPlayer.new()
+		sfx.stream = snd
+		sfx.bus = &"SFX"
+		get_tree().root.add_child(sfx)
+		sfx.play()
+		sfx.finished.connect(sfx.queue_free)

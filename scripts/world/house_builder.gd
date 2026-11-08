@@ -9,6 +9,14 @@ const MainExitScript = preload("res://scripts/world/main_exit.gd")
 const AnswerMachineScript = preload("res://scripts/world/answer_machine.gd")
 const ScareTriggerScript = preload("res://scripts/world/scare_trigger.gd")
 
+# Geometría de pisos y escalera (metros). La escalera sube hacia +z y desemboca en el pasillo de arriba.
+const GROUND_FLOOR_TOP := 0.1
+const UPPER_FLOOR_TOP := 3.6
+const STAIR_BOTTOM_Z := -3.5
+const STAIR_TOP_Z := 1.5
+const STAIR_WIDTH := 2.0
+const STAIR_HOLE_HALF_X := 1.25
+
 var wall_material: StandardMaterial3D
 var floor_material: StandardMaterial3D
 var wood_material: StandardMaterial3D
@@ -40,7 +48,9 @@ func _init_materials() -> void:
 func build_house(layout: Dictionary) -> void:
 	# 1. Pisos y techos
 	_create_floor_slab(Vector3(0, 0, 0), Vector3(16, 0.2, 14), floor_material) # Planta baja
-	_create_floor_slab(Vector3(0, 3.5, 0), Vector3(16, 0.2, 14), floor_material, true) # Planta alta (con hueco escalera)
+	for r in upper_floor_rects():
+		# r = Rect2 en (x, z); se genera un bloque de piso por rectángulo, dejando el hueco de la escalera
+		_create_floor_slab(Vector3(r.get_center().x, UPPER_FLOOR_TOP - 0.1, r.get_center().y), Vector3(r.size.x, 0.2, r.size.y), floor_material)
 	_create_floor_slab(Vector3(0, 7.0, 0), Vector3(16, 0.2, 14), wall_material) # Techo planta alta
 
 	# 2. Paredes exteriores (Planta Baja y Planta Alta)
@@ -61,10 +71,15 @@ func build_house(layout: Dictionary) -> void:
 	# PA: Habitaciones
 	_create_wall(Vector3(2.5, 5.25, 3.5), Vector3(0.3, 3.5, 7))
 	_create_wall(Vector3(-2.5, 5.25, 3.5), Vector3(0.3, 3.5, 7))
-	_create_wall(Vector3(0, 5.25, -3.5), Vector3(0.3, 3.5, 7))
+	# PA: división del fondo, recortada para no tapar el hueco de la escalera
+	_create_wall(Vector3(0, 5.25, (-7.0 + STAIR_BOTTOM_Z) * 0.5), Vector3(0.3, 3.5, absf(STAIR_BOTTOM_Z + 7.0)))
+	# Barandas del hueco en planta alta (laterales y fondo), para no caerse
+	_create_wall(Vector3(-STAIR_HOLE_HALF_X, UPPER_FLOOR_TOP + 0.5, (STAIR_BOTTOM_Z + STAIR_TOP_Z) * 0.5), Vector3(0.1, 1.0, absf(STAIR_TOP_Z - STAIR_BOTTOM_Z)))
+	_create_wall(Vector3(STAIR_HOLE_HALF_X, UPPER_FLOOR_TOP + 0.5, (STAIR_BOTTOM_Z + STAIR_TOP_Z) * 0.5), Vector3(0.1, 1.0, absf(STAIR_TOP_Z - STAIR_BOTTOM_Z)))
+	_create_wall(Vector3(0, UPPER_FLOOR_TOP + 0.5, STAIR_BOTTOM_Z), Vector3(STAIR_HOLE_HALF_X * 2.0, 1.0, 0.1))
 
 	# 4. Escalera entre pisos
-	_create_staircase(Vector3(0, 1.75, -1.0), Vector3(2.0, 3.5, 5.0))
+	_create_staircase()
 
 	# 5. Instanciar puertas
 	for d_data in layout.get("doors", []):
@@ -144,33 +159,72 @@ func _create_floor_slab(pos: Vector3, size: Vector3, mat: Material, has_hole: bo
 		_create_floor_slab(pos + Vector3(size.x * 0.25 + 0.6, 0, 0), right_size, mat, false)
 
 
-func _create_staircase(pos: Vector3, size: Vector3) -> void:
+func _create_staircase() -> void:
 	var body := StaticBody3D.new()
 	body.collision_layer = 1
-	body.position = pos
 
-	# Rampa invisible para navegación fluida
+	var run := STAIR_TOP_Z - STAIR_BOTTOM_Z # positivo: sube hacia +z
+	var rise := UPPER_FLOOR_TOP - GROUND_FLOOR_TOP
+	var hw := STAIR_WIDTH * 0.5
+	var slab_drop := 0.25
+
+	# Rampa prisma convexa: arranca al ras de GROUND_FLOOR_TOP y termina al ras de UPPER_FLOOR_TOP
 	var col := CollisionShape3D.new()
-	var box := BoxShape3D.new()
-	box.size = Vector3(size.x, 0.4, size.z * 1.1)
-	col.shape = box
-	col.rotation_degrees.x = 35.0 # Inclinación
+	var wedge := ConvexPolygonShape3D.new()
+	wedge.points = PackedVector3Array([
+		Vector3(-hw, GROUND_FLOOR_TOP, STAIR_BOTTOM_Z),
+		Vector3(hw, GROUND_FLOOR_TOP, STAIR_BOTTOM_Z),
+		Vector3(-hw, UPPER_FLOOR_TOP, STAIR_TOP_Z),
+		Vector3(hw, UPPER_FLOOR_TOP, STAIR_TOP_Z),
+		Vector3(-hw, GROUND_FLOOR_TOP - slab_drop, STAIR_BOTTOM_Z),
+		Vector3(hw, GROUND_FLOOR_TOP - slab_drop, STAIR_BOTTOM_Z),
+		Vector3(-hw, UPPER_FLOOR_TOP - slab_drop, STAIR_TOP_Z),
+		Vector3(hw, UPPER_FLOOR_TOP - slab_drop, STAIR_TOP_Z),
+	])
+	col.shape = wedge
 	body.add_child(col)
 
-	# Escalones visuales
-	var steps := 10
-	var step_height := size.y / float(steps)
-	var step_depth := size.z / float(steps)
+	# Escalones visuales (sin colisión propia; la rampa es la que se camina)
+	var steps := 14
+	var step_h := rise / float(steps)
+	var step_d := run / float(steps)
 	for i in range(steps):
 		var mesh_inst := MeshInstance3D.new()
 		var step_mesh := BoxMesh.new()
-		step_mesh.size = Vector3(size.x, step_height, step_depth)
+		var h := step_h * (i + 1)
+		step_mesh.size = Vector3(STAIR_WIDTH, h, absf(step_d))
 		step_mesh.material = wood_material
 		mesh_inst.mesh = step_mesh
-		mesh_inst.position = Vector3(0, -size.y * 0.5 + (i + 0.5) * step_height, size.z * 0.5 - (i + 0.5) * step_depth)
+		mesh_inst.position = Vector3(0, GROUND_FLOOR_TOP + h * 0.5, STAIR_BOTTOM_Z + step_d * (i + 0.5))
 		body.add_child(mesh_inst)
 
 	add_child(body)
+
+
+## Altura de la superficie de la rampa en una coordenada z dada.
+func stair_surface_height(z: float) -> float:
+	var t := clampf((z - STAIR_BOTTOM_Z) / (STAIR_TOP_Z - STAIR_BOTTOM_Z), 0.0, 1.0)
+	return lerpf(GROUND_FLOOR_TOP, UPPER_FLOOR_TOP, t)
+
+
+## Rectángulos (x, z) que forman el piso de planta alta: toda la casa menos el hueco de la escalera.
+func upper_floor_rects() -> Array[Rect2]:
+	var hx := STAIR_HOLE_HALF_X
+	var z_min := minf(STAIR_BOTTOM_Z, STAIR_TOP_Z)
+	var z_max := maxf(STAIR_BOTTOM_Z, STAIR_TOP_Z)
+	return [
+		Rect2(Vector2(-8.0, -7.0), Vector2(8.0 - hx, 14.0)),      # lado izquierdo
+		Rect2(Vector2(hx, -7.0), Vector2(8.0 - hx, 14.0)),        # lado derecho
+		Rect2(Vector2(-hx, -7.0), Vector2(hx * 2.0, z_min + 7.0)), # franja del fondo
+		Rect2(Vector2(-hx, z_max), Vector2(hx * 2.0, 7.0 - z_max)) # franja del frente (descanso)
+	]
+
+
+func upper_floor_covers(x: float, z: float) -> bool:
+	for r in upper_floor_rects():
+		if r.has_point(Vector2(x, z)):
+			return true
+	return false
 
 
 func _spawn_door(data: Dictionary) -> void:
@@ -232,19 +286,21 @@ func _spawn_hiding_spot(data: Dictionary) -> void:
 	var spot := HidingSpotScript.new()
 	spot.spot_id = data.get("id", "")
 	spot.spot_name = data.get("name", "Escondite")
+	spot.kind = data.get("kind", "closet")
+	spot.size = data.get("size", Vector3(1.6, 0.8, 2.0) if spot.kind == "bed" else Vector3(1.2, 2.0, 1.0))
 	spot.position = data.get("position", Vector3.ZERO)
 	spot.exit_position = data.get("exit_position", Vector3.ZERO)
 
 	var col := CollisionShape3D.new()
 	var box := BoxShape3D.new()
-	box.size = Vector3(1.2, 2.0, 1.0)
+	box.size = spot.size
 	col.shape = box
 	spot.add_child(col)
 
-	# Mueble visual (armario)
+	# Mueble visual (armario o cama)
 	var mesh_inst := MeshInstance3D.new()
 	var m := BoxMesh.new()
-	m.size = Vector3(1.1, 1.9, 0.9)
+	m.size = spot.size - Vector3(0.06, 0.06, 0.06)
 	m.material = wood_material
 	mesh_inst.mesh = m
 	spot.add_child(mesh_inst)

@@ -118,17 +118,18 @@ func _connect_world_events() -> void:
 		elif child is ScareTriggerScript:
 			child.scare_triggered.connect(_on_scare_triggered)
 		elif child is FuseBoxScript:
+			child.fuses_updated.connect(func(_count):
+				_update_hud()
+				trigger_autosave()
+			)
 			child.power_restored.connect(_on_power_restored)
 		elif child is MainExitScript:
 			child.player_escaped.connect(_on_player_escaped)
 
 
 func _on_item_picked_up(item_data: Dictionary) -> void:
-	if btn_ending_menu:
-		btn_ending_menu.pressed.connect(func():
-			get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
-		)
-
+	if item_data.get("type", "") == "fuse" and objective:
+		objective.add_fuse(item_data.get("id", ""))
 	_update_hud()
 	trigger_autosave()
 
@@ -226,7 +227,16 @@ func _update_hud() -> void:
 			lbl_fuses.text = "¡ENERGÍA RESTAURADA! Escapá por la puerta principal"
 			lbl_fuses.modulate = Color(0.2, 1.0, 0.3)
 		else:
-			lbl_fuses.text = "Fusibles: %d / %d" % [objective.collected_fuses, objective.total_fuses_required]
+			var installed := _get_installed_fuses()
+			if installed > 0:
+				lbl_fuses.text = "Fusibles: %d / %d (Colocados: %d/%d)" % [
+					objective.collected_fuses,
+					objective.total_fuses_required,
+					installed,
+					objective.total_fuses_required
+				]
+			else:
+				lbl_fuses.text = "Fusibles: %d / %d" % [objective.collected_fuses, objective.total_fuses_required]
 			lbl_fuses.modulate = Color(1.0, 0.9, 0.3)
 
 	if lbl_keys and player and player.inventory:
@@ -235,6 +245,15 @@ func _update_hud() -> void:
 			lbl_keys.text = "Llaves: Ninguna"
 		else:
 			lbl_keys.text = "Llaves: " + ", ".join(keys)
+
+
+func _get_installed_fuses() -> int:
+	if not house_builder:
+		return 0
+	for child in house_builder.get_children():
+		if child is FuseBoxScript:
+			return child.installed_fuses
+	return 0
 
 
 func trigger_autosave() -> void:
